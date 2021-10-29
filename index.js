@@ -5,52 +5,47 @@ const PORT = 8000;
 
 const app = express();
 
-const url = 'https://www.theguardian.com/international'
+const url = 'https://www.lemonde.fr/';
 
 axios(url)
-    .then(response => {
-        const html = response.data;
-        const $ = cheerio.load(html);
-        const articles = [];
-        
+	.then((response) => {
+		const html = response.data;
+		const $ = cheerio.load(html);
+		const articles = [];
 
-        $('.fc-item__title', html).each(function() {
-        const title = $(this).text()
-        const url = $(this).find('a').attr('href') 
-        articles.push({
-            title,
-            url
-        });
-    })
+		$('.article article--main', html).each(function () {
+			const title = $(this).text();
 
-        
+			articles.push({
+				title,
+			});
+		});
 
-        // console.log("articles:", articles)
-        
+		console.log('articles:', articles);
+	})
+	.catch((err) => console.log(err));
 
-    }).catch(err => console.log(err))
-
-const urlArticle = "https://www.theguardian.com/world/2021/oct/29/canada-sexual-misconduct-military-scandal"
+const urlArticle =
+	'https://www.lemonde.fr/politique/article/2021/10/29/election-presidentielle-2022-macron-l-europeen-mise-sur-sa-difference-face-au-souverainisme-ambiant_6100293_823448.html';
 
 axios(urlArticle)
-    .then(response => {
-        const html = response.data;
-        
-        const $ = cheerio.load(html);
-        
-        const articlesContent = [];
+	.then((response) => {
+		const html = response.data;
 
-        $('.dcr-s23rjr', html).each(function() {
-            const para = $(this).text()
-            
-            articlesContent.push({
-            para,
-            });
-        
-        })
-        console.log("content:", articlesContent)
+		const $ = cheerio.load(html);
 
-    }).catch(err => console.log(err))
+		const articlesContent = [];
+
+		$('.article__paragraph ', html).each(function () {
+			const para = $(this).text();
+
+			articlesContent.push({
+				para,
+			});
+		});
+		// console.log('content:', articlesContent);
+	})
+	.catch((err) => console.log(err));
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
